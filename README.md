@@ -58,3 +58,9 @@ GRANT
 TO
     app;
 ```
+
+### Install dependencies
+
+```
+npm run install
+```

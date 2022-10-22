@@ -5,5 +5,8 @@
   "description": "Haukka API",
   "dependencies": {
     "oracledb": "^5.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
   }
 }

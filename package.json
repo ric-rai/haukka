@@ -1,0 +1,9 @@
+{
+  "name": "Haukka API",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Haukka API",
+  "dependencies": {
+    "oracledb": "^5.1.0"
+  }
+}

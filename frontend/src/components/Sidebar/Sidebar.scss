@@ -1,0 +1,72 @@
+:root {
+  --sidebar-width: 280px;
+  --sidebar-transition-length: 0.5s;
+}
+
+sidebar-x {
+  flex: 0 0 auto;
+  display: flex;
+  height: calc(100vh - var(--header-height));
+  transition: width var(--sidebar-transition-length);
+  overflow: hidden;
+  border-right: 1px solid rgba(var(--common-color-rgb), 0.12);
+  z-index: 1000;
+  margin-top: var(--header-height);
+
+  &.open {
+    width: var(--sidebar-width);
+  }
+
+  &.closed {
+    width: 45px;
+  }
+
+  // Wraps everything in the sidebar
+  > .MuiDrawer-root {
+    &,
+    > .MuiPaper-root {
+      top: var(--header-height);
+      width: inherit;
+      height: inherit;
+      overflow: hidden;
+    }
+
+    // Second wrapper wrapping all but the parents
+    .MuiPaper-root {
+      > ul > li {
+        position: relative;
+        display: flex;
+        height: 50px;
+        width: 100%;
+        align-items: center;
+        justify-content: flex-start;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+        font-weight: 400;
+        appearance: none;
+        border: none;
+        background-color: unset;
+        padding: 0;
+
+        &.selected {
+          background-color: rgba(var(--common-color-rgb), 0.08);
+        }
+
+        // Wraps everything inside list elements
+        > .MuiButtonBase-root {
+          padding-left: 10px;
+
+          .MuiListItemIcon-root {
+            min-width: unset;
+            padding-right: 10px;
+          }
+
+          > .MuiListItem-Text {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+}

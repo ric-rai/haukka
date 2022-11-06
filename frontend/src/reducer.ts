@@ -4,6 +4,7 @@ import { Event } from './events'
 import { handleAppEvent } from './App.handler'
 import { handleHeaderEvent } from './components/Header/Header.handler'
 import { handleSidebarEvent } from './components/Sidebar/Sidebar.handler'
+import { handleSplashEvent } from './components/Splash/Splash.handler'
 
 export const reducer =
   (dispatchRef: { current: undefined | ((value: Event['any']) => void) }) =>
@@ -21,6 +22,8 @@ export const reducer =
           return handleHeaderEvent(state, event as Event['header'])
         case 'sidebar':
           return handleSidebarEvent(state, event as Event['sidebar'])
+        case 'splash':
+          return handleSplashEvent(state, event as Event['splash'])
       }
     }
 

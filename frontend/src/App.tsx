@@ -8,7 +8,8 @@ import { reducer } from './reducer'
 import { Event } from './events'
 
 // Components
-import { Body, Header, Sidebar, PageLink, Main, Page } from './components'
+import { Body, Splash, Header, Sidebar, PageLink } from './components'
+import { Main, Page } from './components'
 
 // Utils
 import { kebabToSnake, snakeToSentence } from './utils/string'
@@ -58,6 +59,7 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
+      <Splash {...{ dispatch, state: { isLogged } }} />
       <Header
         {...{ dispatch, state: { name: user?.name, isSidebarOpen, isDark } }}
       >

@@ -12,6 +12,6 @@ export type State = {
   isLogged: boolean
   sidebarSelection: Page
   isSidebarOpen: boolean
-  user: null
+  user: null | { name: string }
   idToken: null | string
 }

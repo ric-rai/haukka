@@ -6,15 +6,15 @@ declare global {
    * @see {https://www.typescriptlang.org/docs/handbook/jsx.html}
    */
   namespace JSX {
-    type Children = (Element | string | null)[] | Element | string | null;
+    type Children = (Element | string | null)[] | Element | string | null
 
     interface IntrinsicElements {
       [key: string]: React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLSpanElement>,
         HTMLSpanElement
-      > & { class?: string };
+      > & { class?: string }
     }
   }
 }
 
-export default JSX;
+export default JSX

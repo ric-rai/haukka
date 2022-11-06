@@ -1,4 +1,4 @@
-import { Page } from "./state/state";
+import { Page } from './state/state'
 
 declare global {
   interface EventIndex {
@@ -8,14 +8,14 @@ declare global {
        * Navigation to a page. Page can be any string. Event handler validates
        * the page.
        */
-      [P in `to_${Page}`]: void;
+      [P in `to_${Page}`]: void
     } & {
       /**
        * User clicks back/forward buttons. Payload is the state object of the
        * history entry.
        */
-      popstate: { page: string };
-      logout: void;
-    };
+      popstate: { page: string }
+      logout: void
+    }
   }
 }

@@ -5,12 +5,12 @@ export enum PAGES {
   manual,
 }
 
-export type Page = keyof Omit<typeof PAGES, "__">;
+export type Page = keyof Omit<typeof PAGES, '__'>
 
 export type State = {
-  isDark: boolean;
-  isLogged: boolean;
-  sidebarSelection: Page;
-  user: null;
-  idToken: null | string;
-};
+  isDark: boolean
+  isLogged: boolean
+  sidebarSelection: Page
+  user: null
+  idToken: null | string
+}

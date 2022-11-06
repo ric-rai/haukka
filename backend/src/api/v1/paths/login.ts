@@ -1,7 +1,10 @@
 import { Operation } from "express-openapi";
+import * as jsonwebtoken from "jsonwebtoken";
+
+const JWT_SECRET = "goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu";
 
 export const GET: Operation = (req, res, next) => {
-  res.status(200).send("success");
+  res.redirect("/?token=" + jsonwebtoken.sign({ user: "test" }, JWT_SECRET));
 };
 
 const token = {
@@ -18,7 +21,7 @@ GET.apiDoc = {
   operationId: "login",
   parameters: [token],
   responses: {
-    200: {
+    304: {
       description: "Redirect to the root.",
       content: {
         "text/plain": {

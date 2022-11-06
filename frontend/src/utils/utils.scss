@@ -1,0 +1,20 @@
+@use 'sass:color';
+
+@function color-by-mode($light, $dark) {
+  $l-red: color.red($light);
+  $l-green: color.green($light);
+  $l-blue: color.blue($light);
+  $l-alpha: color.alpha($light);
+
+  $d-red: color.red($dark);
+  $d-green: color.green($dark);
+  $d-blue: color.blue($dark);
+  $d-alpha: color.alpha($dark);
+
+  $red: 'calc(#{$l-red} * var(--light) + #{$d-red} * var(--dark))';
+  $green: 'calc(#{$l-green} * var(--light) + #{$d-green} * var(--dark))';
+  $blue: 'calc(#{$l-blue} * var(--light) + #{$d-blue} * var(--dark))';
+  $alpha: 'calc(#{$l-alpha} * var(--light) + #{$d-alpha} * var(--dark))';
+
+  @return unquote('rgba(#{$red}, #{$green}, #{$blue}, #{$alpha})');
+}

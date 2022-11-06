@@ -2,6 +2,8 @@ import { State } from './state/state'
 import { Event } from './events'
 
 import { handleAppEvent } from './App.handler'
+import { handleHeaderEvent } from './components/Header/Header.handler'
+import { handleSidebarEvent } from './components/Sidebar/Sidebar.handler'
 
 export const reducer =
   (dispatchRef: { current: undefined | ((value: Event['any']) => void) }) =>
@@ -15,6 +17,10 @@ export const reducer =
       switch (type) {
         case 'app':
           return handleAppEvent(state, event as Event['app'])
+        case 'header':
+          return handleHeaderEvent(state, event as Event['header'])
+        case 'sidebar':
+          return handleSidebarEvent(state, event as Event['sidebar'])
       }
     }
 

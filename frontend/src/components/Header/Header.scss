@@ -1,0 +1,114 @@
+:root {
+  --header-height: 64px;
+}
+
+header-x {
+  position: fixed;
+  display: flex;
+  width: 100vw;
+  height: var(--header-height);
+  z-index: 2000;
+
+  // Wrapper for the sidebar header accordion
+  > .sidebar-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: inherit;
+    transition: width var(--sidebar-transition-length);
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+
+    // Second wrapper
+    > .MuiDrawer-paper {
+      display: flex;
+      height: inherit;
+      width: inherit;
+      align-items: end;
+      justify-content: center;
+
+      // Left chevron button on the sidebar header
+      > button {
+        margin-right: 10px;
+
+        > svg {
+          font-size: 33px;
+        }
+      }
+    }
+
+    &.open {
+      width: var(--sidebar-width);
+    }
+
+    &.closed {
+      width: 0;
+      border: none;
+    }
+  }
+
+  // Wrapper for the main header content
+  > .MuiAppBar-root {
+    height: inherit;
+    flex-direction: row;
+    flex: 1;
+    width: unset;
+    position: unset;
+
+    // Burger menu button
+    > .sidebar-open-button {
+      color: inherit;
+      margin: 10px;
+      margin-left: 3px;
+    }
+
+    > h1 {
+      font-weight: 500;
+      font-size: 1.25rem;
+      line-height: 2.3rem;
+      white-space: nowrap;
+      color: white;
+      text-align: center;
+      margin-right: auto;
+    }
+
+    // Right side info and controls
+    > .right {
+      display: flex;
+      align-items: center;
+      color: white;
+      margin-right: 30px;
+      gap: 20px;
+      user-select: none;
+
+      // Dark/light mode switch
+      > label:first-child {
+        color: white;
+        gap: 8px;
+        height: 100%;
+        padding: 0 24px 0 10px;
+        background-color: rgba(255, 255, 255, 0.12);
+
+        .MuiSwitch-thumb {
+          color: white !important;
+        }
+        .MuiSwitch-track {
+          background-color: white !important;
+        }
+      }
+
+      > .logout {
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 6px 10px;
+        color: white;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.22);
+          border-color: white;
+        }
+      }
+    }
+  }
+}

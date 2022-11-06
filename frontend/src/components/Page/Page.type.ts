@@ -1,9 +1,9 @@
 import { State } from '../../state/state'
-import { Events } from '../../events'
+import { Event } from '../../events'
 
 export interface Page {
   (props: {
     state: State
-    dispatch: (event: Events['any']) => void
+    dispatch: (event: Event['any']) => void
   }): JSX.Element
 }

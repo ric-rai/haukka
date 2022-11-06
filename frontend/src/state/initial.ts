@@ -1,7 +1,8 @@
 import { State } from './state'
 
 export const initialState: State = {
-  sidebarSelection: 'frontpage',
+  sidebarSelection: 'front_page',
+  isSidebarOpen: false,
   isDark: true,
   idToken: null,
   user: null,

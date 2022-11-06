@@ -1,0 +1,6 @@
+export * from './Header/Header'
+export * from './Main/Main'
+export * from './PageLink/PageLink'
+export * from './Body/Body'
+export * from './Page/Page'
+export * from './Sidebar/Sidebar'

@@ -29,7 +29,7 @@ function App() {
   const { isDark, isLogged, sidebarSelection, user, isSidebarOpen } = state
 
   // Navigate to the right page when app is loaded.
-  const page = kebabToSnake(window.location.hash.replace('#', '')) as PageNames
+  const page = kebabToSnake(window.location.hash.replace('#/', '')) as PageNames
   if (!page) dispatch({ name: `app/to_front_page` })
   if (PAGES[page] && sidebarSelection !== page)
     dispatch({ name: `app/to_${page}` } as Event['app'])

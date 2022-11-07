@@ -9,7 +9,7 @@ export function handleAppEvent(state: State, event: Event['app']): State {
   if (PAGES[page]) {
     if (currentPage !== page) {
       currentPage = page
-      const url = `${window.location.origin}#${snakeToKebab(page)}`
+      const url = `${window.location.origin}/#/${snakeToKebab(page)}`
       document.title = snakeToSentence(page)
       history.pushState({ page }, '', url)
     }

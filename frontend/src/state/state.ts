@@ -13,5 +13,5 @@ export type State = {
   sidebarSelection: Page
   isSidebarOpen: boolean
   user: null | { name: string }
-  idToken: null | string
+  jwt: null | string
 }

@@ -5,8 +5,18 @@ import { Button, Paper } from '@mui/material'
 import { ReactComponent as HaukkaLogoCircle } from '../../assets/img/haukka-logo-circle.svg'
 import luomus_logo from '../../assets/img/luomus-logo.png'
 
+const loginUrl =
+  process.env.NODE_ENV === 'development'
+    ? 'http://127.0.0.1:8080/login'
+    : '/login'
+
 export const Splash: Type = ({ state, dispatch }) => {
   const { isLogged } = state
+
+  const hash = window.location.hash.replace('#/', '')
+  if (hash.startsWith('?jwt=')) {
+    dispatch({ name: 'splash/set_jwt', payload: hash.split('?jwt=')[1] })
+  }
 
   return isLogged ? null : (
     <splash-x>
@@ -16,7 +26,7 @@ export const Splash: Type = ({ state, dispatch }) => {
           <div className="logo-container">
             <HaukkaLogoCircle />
           </div>
-          <Button variant="contained" onClick={() => void 0}>
+          <Button variant="contained" href={loginUrl}>
             Kirjaudu sisään
           </Button>
           <p>

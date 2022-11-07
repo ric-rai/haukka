@@ -4,7 +4,7 @@ export const initialState: State = {
   sidebarSelection: 'front_page',
   isSidebarOpen: false,
   isDark: true,
-  idToken: null,
+  jwt: null,
   user: null,
   isLogged: false,
 }

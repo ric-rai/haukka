@@ -23,7 +23,7 @@ export const reducer =
         case 'sidebar':
           return handleSidebarEvent(state, event as Event['sidebar'])
         case 'splash':
-          return handleSplashEvent(state, event as Event['splash'])
+          return handleSplashEvent(state, event as Event['splash'], dispatch)
       }
     }
 

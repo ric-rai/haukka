@@ -1,3 +1,5 @@
+import { Translation } from '../../lang/lang'
+
 export interface Manual {
-  (): JSX.Element
+  (props: { state: { lang: Translation } }): JSX.Element
 }

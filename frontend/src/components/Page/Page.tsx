@@ -6,11 +6,12 @@ import { Manual } from '../../pages/Manual/Manual'
 
 export const Page: Type = ({ dispatch, state }) => {
   const { sidebarSelection } = state
+  const { lang } = state
 
   const pages = {
     front_page: FrontPage,
     list_days: ListDays,
-    manual: Manual,
+    manual: () => <Manual state={{ lang }} />,
   }
 
   return <page-x>{pages[sidebarSelection]()}</page-x>

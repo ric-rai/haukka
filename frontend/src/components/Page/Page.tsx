@@ -9,7 +9,7 @@ export const Page: Type = ({ dispatch, state }) => {
   const { lang } = state
 
   const pages = {
-    front_page: FrontPage,
+    front_page: () => <FrontPage state={{ lang }} />,
     list_days: ListDays,
     manual: () => <Manual state={{ lang }} />,
   }

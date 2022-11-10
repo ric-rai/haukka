@@ -1,3 +1,5 @@
+import { Translation } from '../lang/lang'
+
 export enum PAGES {
   __,
   front_page,
@@ -8,6 +10,7 @@ export enum PAGES {
 export type Page = keyof Omit<typeof PAGES, '__'>
 
 export type State = {
+  lang: Translation
   isDark: boolean
   isLogged: boolean
   sidebarSelection: Page

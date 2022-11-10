@@ -16,6 +16,7 @@ declare global {
        */
       popstate: { page: string }
       logout: void
+      change_language: string
     }
   }
 }

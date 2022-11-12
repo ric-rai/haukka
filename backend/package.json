@@ -20,6 +20,8 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
-    "start": "tsc -p . && node dist/app.js"
+    "start": "npm run build && node dist/app.js",
+    "build": "tsc -p .",
+    "postbuild": "rsync -a --include='*/' --include='*.sql' --exclude='*' ./src/ ./dist"
   }
 }

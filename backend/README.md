@@ -24,7 +24,7 @@ Then run a local Oracle database in a docker container:
 docker run -d --name haukka \
     -p 1521:1521 -p 5500:5500 \
     -e ORACLE_PWD=Sup3rsecret \
-    -v haukka:/opt/oracle/oradata
+    -v haukka:/opt/oracle/oradata \
     container-registry.oracle.com/database/express:21.3.0-xe
 ```
 

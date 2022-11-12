@@ -11,7 +11,8 @@ CREATE TABLE
     user_identity VARCHAR(100) NOT NULL UNIQUE,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    observatory INT
+    observatory INT,
+    CONSTRAINT email_is_unique UNIQUE (email)
   );
 
 CREATE TABLE
@@ -19,7 +20,8 @@ CREATE TABLE
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     metadata METADATA NOT NULL,
     observatory_name VARCHAR(100) NOT NULL,
-    actions VARCHAR(500) NOT NULL
+    actions VARCHAR(500) NOT NULL,
+    CONSTRAINT observatory_name_is_unique UNIQUE (observatory_name)
   );
 
 CREATE TABLE

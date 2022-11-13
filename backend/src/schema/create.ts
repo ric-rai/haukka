@@ -21,9 +21,9 @@ export const createSchema = async (pool: oracledb.Pool) => {
         throw new Error(error?.message);
       }
     }
-    connection.close();
+    await connection.close();
   } catch (err) {
     console.error(err);
-    connection.close();
+    await connection.close();
   }
 };

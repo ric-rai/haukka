@@ -2,7 +2,7 @@
 
 -- INSERT:
 INSERT INTO
-  OBSERVATORY (metadata, observatory_name, actions)
+  Observatory (metadata, observatory_name, actions)
 VALUES
   (`:metadata`, `:name`, `:actions`);
 
@@ -10,6 +10,6 @@ VALUES
 SELECT
   *
 FROM
-  OBSERVATORY
+  Observatory
 WHERE
   observatory_name = `:name`;

@@ -3,5 +3,5 @@ node_modules
 .vscode
 dist
 .DS_Store
-backend/public
+backend/src/public
 build

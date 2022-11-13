@@ -26,3 +26,12 @@ export const https = {
     });
   },
 };
+
+export type LajiUser = {
+  id: `MA.${number}`;
+  fullName: string;
+  emailAddress: string;
+  defaultLanguage: "fi";
+  role: string[];
+  "@context": string;
+};

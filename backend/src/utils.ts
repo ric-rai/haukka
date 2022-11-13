@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as HTTPS from "https";
 
 export const parseStatements = (path: string) => {
   return fs
@@ -12,4 +13,16 @@ export const parseStatements = (path: string) => {
       acc[name] = statement;
       return acc;
     }, {} as { [key: string]: string });
+};
+
+export const https = {
+  get: (url: string) => {
+    return new Promise<string>(function (resolve, reject) {
+      HTTPS.get(url, (resp) => {
+        let data = "";
+        resp.on("data", (chunk) => (data += chunk));
+        resp.on("end", () => resolve(data));
+      }).on("error", (e) => reject(e));
+    });
+  },
 };

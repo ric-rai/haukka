@@ -42,7 +42,7 @@
     "minimatch": "$minimatch"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "prettier --check src/ && eslint --ext .ts,.tsx src/",

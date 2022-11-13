@@ -10,18 +10,20 @@ export const createSchema = async (pool: oracledb.Pool) => {
     for (const statement of statements) {
       try {
         await connection.execute(statement);
-        console.log("Executed statement", statement);
+        console.info("Executed statement", statement);
       } catch (err) {
         const error = err as { errorNum: number; message: string };
         if (error?.errorNum === 955) {
           const [, name] = statement.match(/CREATE (\w+?( |\n)+?\w+)/) || [];
-          console.log(`${name.replace(/(\n|\s)+/, " ")} already exists! Skipping...`);
+          console.info(`${name.replace(/(\n|\s)+/, " ")} already exists! Skipping...`);
           continue;
         }
         throw new Error(error?.message);
       }
     }
+    connection.close();
   } catch (err) {
     console.error(err);
+    connection.close();
   }
 };

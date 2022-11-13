@@ -4,27 +4,31 @@ import * as path from "path";
 import type { Metadata } from "../metadata/metadata";
 import { locations } from "../../locations";
 
-const statements = parseStatements(path.join(__dirname, "./statements.sql"));
+const statements = parseStatements(path.join(__dirname, "./observatory.sql"));
 
-export type Observatory = ReturnType<typeof Observatory>;
+export type Observatory = Awaited<ReturnType<typeof Observatory>>;
 
-export const Observatory = (pool: oracledb.Pool, metadata: Metadata) => ({
-  init: async () => {
-    const connection = await pool.getConnection();
-    let isInserted: boolean = false;
-    for (const observatory of locations.observatories) {
-      const { observatory: name } = observatory;
-      const result = await connection.execute(statements.SELECT_BY_NAME, { name });
-      // HEADS UP! This won't update the observatory if it already exists.
-      if (!((result?.rows?.length || 0) > 0)) {
-        isInserted = true;
-        await connection.execute(statements.INSERT, {
-          name,
-          meta_data: metadata.create(),
-          actions: "testactions",
-        });
+export const Observatory = async (pool: oracledb.Pool, metadata: Metadata) => {
+  const connection = await pool.getConnection();
+  for (const observatory of locations.observatories) {
+    let name: string | null = null;
+    try {
+      ({ observatory: name } = observatory);
+      await connection.execute(statements.INSERT, {
+        name,
+        metadata: await metadata.create(connection),
+        actions: "testactions",
+      });
+    } catch (err) {
+      const error = err as { message: string };
+      if (error?.message.includes("(APP.OBSERVATORY_NAME_IS_UNIQUE) violated")) {
+        console.info(`Observatory ${name} already exists! Skipping...`);
+        continue;
       }
+      throw new Error(error?.message);
     }
-    if (isInserted) connection.commit();
-  },
-});
+  }
+  connection.commit();
+  connection.close();
+  return {};
+};

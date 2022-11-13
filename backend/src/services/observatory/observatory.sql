@@ -2,9 +2,9 @@
 
 -- INSERT:
 INSERT INTO
-  OBSERVATORY (meta_data, observatory_name, actions)
+  OBSERVATORY (metadata, observatory_name, actions)
 VALUES
-  (`:meta_data`, `:name`, `:actions`);
+  (`:metadata`, `:name`, `:actions`);
 
 -- SELECT_BY_NAME:
 SELECT

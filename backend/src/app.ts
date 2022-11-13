@@ -21,8 +21,8 @@ const { USERNAME, PASSWORD, HOSTNAME, SERVICE_ID } = process.env;
     connectString: `${HOSTNAME}/${SERVICE_ID}`,
   });
   await createSchema(pool);
-  const metadata = await Metadata(pool);
-  Observatory(pool, metadata).init();
+  const metadata = await Metadata();
+  const observatory = Observatory(pool, metadata);
 })();
 
 const app = express();
@@ -35,5 +35,5 @@ initialize({
 });
 
 app.listen(8080, () => {
-  console.log(`Listening on port ${port}`);
+  console.info(`Listening on port ${port}`);
 });

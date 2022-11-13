@@ -23,7 +23,7 @@ const { USERNAME, PASSWORD, HOSTNAME, SERVICE_ID } = process.env;
   await createSchema(pool);
   const metadata = await Metadata();
   const observatory = Observatory(pool, metadata);
-})();
+})().catch((err) => console.error(err));
 
 const app = express();
 const port = process.env.PORT || 8080;

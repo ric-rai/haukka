@@ -1,23 +1,23 @@
 import { Operation } from "express-openapi";
 import * as jsonwebtoken from "jsonwebtoken";
-import { Account } from "../../../services/account/account";
+import { AccountService } from "../../../services/account/account";
 
 const { TARGET, AUTH_DOMAIN } = process.env;
 const JWT_SECRET = "goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu";
 
-export default function (account: Account) {
+export default function (account: AccountService) {
   const GET: Operation = async (req, res, next) => {
     if (req.query.token) {
       if (typeof req.query.token !== "string")
         return res.status(400).send(`Invalid query parameter 'token': ${req.query.token}`);
 
-      const result = await account.getPerson(req.query.token);
+      const result = await account.getAccount(req.query.token);
       if (result === 404)
         return res.status(404).send(`Unable to find user data for ${req.query.token}`);
       if (result === 403) return res.status(403).send(`User doesn't have required role!`);
       if (result === 500) return res.status(500).send(`Internal server error!`);
-      const { id, email } = result;
-      return res.redirect(`/#/?jwt=${jsonwebtoken.sign({ id, email }, JWT_SECRET)}`);
+      const { identity, email } = result;
+      return res.redirect(`/#/?jwt=${jsonwebtoken.sign({ identity, email }, JWT_SECRET)}`);
     }
 
     return res.redirect(
@@ -27,7 +27,7 @@ export default function (account: Account) {
 
   GET.apiDoc = {
     summary: "Handles login after the user has been authenticated.",
-    operationId: "getPerson",
+    operationId: "getAccount",
     parameters: [
       {
         in: "query",

@@ -1,32 +1,20 @@
 import * as path from "path";
 import oracledb = require("oracledb");
-import { https, LajiUser, parseStatements } from "../../utils";
+import { https, LajiUser, parseStatements, TupleToObject } from "../../utils";
 import { Metadata, MetadataService } from "../metadata/metadata";
 
 const statements = parseStatements(path.join(__dirname, "./account.sql"));
 
-type Result = oracledb.Result<
-  [
-    id: number,
-    metadata: Metadata,
-    user_identity: string,
-    full_name: string,
-    email: string,
-    observatory: number
-  ]
+type AccountRow = [number, Metadata, string, string, string, number];
+type Account = TupleToObject<
+  AccountRow,
+  ["id", "metadata", "identity", "fullName", "email", "observatory"]
 >;
+type Result = oracledb.Result<AccountRow>;
 
-type Person = {
-  metadata: Metadata;
-  id: string;
-  fullName: string;
-  email: string;
-  observatory: number;
-};
+export type AccountService = Awaited<ReturnType<typeof AccountService>>;
 
-export type Account = Awaited<ReturnType<typeof Account>>;
-
-export const Account = async (pool: oracledb.Pool, metadataService: MetadataService) => {
+export const AccountService = async (pool: oracledb.Pool, metadataService: MetadataService) => {
   const { ALLOWED_ROLES, API_DOMAIN, API_TOKEN } = process.env;
   if (!ALLOWED_ROLES) throw new Error("Missing ALLOWED_ROLES");
 
@@ -43,7 +31,7 @@ export const Account = async (pool: oracledb.Pool, metadataService: MetadataServ
   });
 
   return {
-    getPerson: async (personToken: string) => {
+    getAccount: async (personToken: string) => {
       const apiUrl = `${API_DOMAIN}/v0/person/${personToken}?access_token=${API_TOKEN}`;
       const response = await https.get(apiUrl).catch((err) => console.error(err));
       if (!response) return 404;
@@ -52,22 +40,23 @@ export const Account = async (pool: oracledb.Pool, metadataService: MetadataServ
       const cnx = await pool.getConnection();
       const sql = SQL(cnx);
       let result = await sql.selectByEmail(lajiUser.emailAddress);
-      let person = result?.rows?.[0];
-      if (!person) {
+      let account = result?.rows?.[0];
+      if (!account) {
         await sql.insert(lajiUser).catch((err) => console.error(err));
         await cnx.commit();
         result = await sql.selectByEmail(lajiUser.emailAddress);
-        person = result?.rows?.[0];
+        account = result?.rows?.[0];
       }
       await cnx.close();
-      return person
+      return account
         ? ({
-            metadata: person[1],
-            id: person[2],
-            fullName: person[3],
-            email: person[4],
-            observatory: person[5],
-          } as Person)
+            id: account[0],
+            metadata: account[1],
+            identity: account[2],
+            fullName: account[3],
+            email: account[4],
+            observatory: account[5],
+          } as Account)
         : 500;
     },
   };

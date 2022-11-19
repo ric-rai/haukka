@@ -6,6 +6,7 @@ import { createSchema } from "./schema/create";
 import { ObservatoryService } from "./services/observatory/observatory";
 import { MetadataService } from "./services/metadata/metadata";
 import { LocationService } from "./services/location/location";
+import { ObservationTypeService } from "./services/observationType/observationType";
 import { AccountService } from "./services/account/account";
 import { initialize } from "express-openapi";
 import { apiDoc } from "./api/v1/apiDoc";
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, "public")));
   const metadataService = await MetadataService();
   const observatoryService = await ObservatoryService(pool, metadataService);
   const locationService = await LocationService(pool, metadataService, observatoryService);
+  const obsTypeService = await ObservationTypeService(pool, metadataService, observatoryService);
   const accountService = await AccountService(pool, metadataService);
 
   initialize({

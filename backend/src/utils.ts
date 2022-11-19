@@ -35,3 +35,9 @@ export type LajiUser = {
   role: string[];
   "@context": string;
 };
+
+type IndexKeys<A extends readonly unknown[]> = Exclude<keyof A, keyof []>;
+
+export type TupleToObject<Row extends any[], Keys extends string[]> = {
+  [K in IndexKeys<Keys> & IndexKeys<Row> as Keys[K] extends string ? Keys[K] : never]: Row[K];
+};

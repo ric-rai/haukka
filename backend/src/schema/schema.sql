@@ -29,7 +29,8 @@ CREATE TABLE
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     metadata METADATA NOT NULL,
     observation_type_name VARCHAR(100) NOT NULL,
-    observatory REFERENCES Observatory NOT NULL
+    observatory REFERENCES Observatory NOT NULL,
+    CONSTRAINT unique_observation_type_in_observatory UNIQUE (observatory, observation_type_name)
   );
 
 CREATE TABLE
@@ -37,7 +38,8 @@ CREATE TABLE
     id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     metadata METADATA NOT NULL,
     location_name VARCHAR(100) NOT NULL,
-    observatory REFERENCES Observatory NOT NULL
+    observatory REFERENCES Observatory NOT NULL,
+    CONSTRAINT unique_location_in_observatory UNIQUE (observatory, location_name)
   );
 
 CREATE TABLE

@@ -25,8 +25,8 @@ export const ObservationTypeService = async (
 
   const cnx = await pool.getConnection();
   for (const observatory of locations.observatories) {
-    const obsName = observatory.observatory;
-    for (const name of observatory.types) {
+    const { name: obsName } = observatory;
+    for (const name of observatory.observationTypes) {
       try {
         const obs = await observatoryService.getByName(obsName);
         if (!obs) throw new Error(`Observatory ${obsName} does not exist!`);

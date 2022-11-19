@@ -27,9 +27,8 @@ export const ObservatoryService = async (pool: oracledb.Pool, metadataService: M
 
   const cnx = await pool.getConnection();
   for (const observatory of locations.observatories) {
-    let name: string | null = null;
+    const { name } = observatory;
     try {
-      ({ observatory: name } = observatory);
       await SQL(cnx).insert(name, "test_actions");
     } catch (err) {
       const error = err as { message: string };

@@ -25,7 +25,7 @@ export const LocationService = async (
 
   const cnx = await pool.getConnection();
   for (const observatory of locations.observatories) {
-    const obsName = observatory.observatory;
+    const { name: obsName } = observatory;
     for (const name of observatory.locations) {
       try {
         const obs = await observatoryService.getByName(obsName);

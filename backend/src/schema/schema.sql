@@ -54,22 +54,45 @@ CREATE OR REPLACE TRIGGER update_observatory_metadata
     BEFORE UPDATE ON Observatory FOR EACH ROW
 BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
 
+-- Ensures the observatory's observation types are valid.
+-- If type name occurs more than once, the additional occurrences are ignored.
 CREATE OR REPLACE TRIGGER validate_observatory_observation_types 
-    BEFORE INSERT ON OBSERVATORY FOR EACH ROW
+    BEFORE INSERT OR UPDATE ON OBSERVATORY FOR EACH ROW
 DECLARE
-    type_list VARCHAR(100);
     type_name VARCHAR(100);
+    observation_types VARCHAR(1000) := '[';
 BEGIN
-    FOR obs_type IN (
-      SELECT ot.type_name FROM 
-        JSON_TABLE(:NEW.observation_types, '$[*]' 
-          COLUMNS(type_name VARCHAR(100) PATH '$' ERROR ON ERROR)
-        ) as ot
-    )
+    FOR obs_type IN (SELECT ot.type_name FROM JSON_TABLE(:NEW.observation_types, '$[*]' 
+    COLUMNS(
+        type_name VARCHAR(100) PATH '$' ERROR ON ERROR
+    )) as ot)
     LOOP
         SELECT name INTO type_name FROM observation_type WHERE name = obs_type.type_name;
+        IF NOT observation_types LIKE '%"'||type_name||'"%' THEN
+            observation_types := observation_types||'"'||type_name||'"'; 
+        END IF;
     END LOOP;
+    observation_types := REPLACE(observation_types, '""', '","') || ']';
+    :NEW.observation_types := observation_types;
 END;
+
+-- Ensures the observatory's observation types are found from observation types table.
+CREATE OR REPLACE TRIGGER validate_observatory_observation_types 
+    BEFORE INSERT OR UPDATE ON OBSERVATORY FOR EACH ROW
+DECLARE
+    locations VARCHAR(1000) := '[';
+BEGIN
+    FOR locs IN (SELECT l.loc FROM JSON_TABLE(:NEW.locations, '$[*]' 
+    COLUMNS(loc VARCHAR(100) PATH '$' ERROR ON ERROR)) as l)
+    LOOP
+        IF NOT locations LIKE '%"'||locs.loc||'"%' THEN
+            locations := locations||'"'||locs.loc||'"'; 
+        END IF;
+    END LOOP;
+    locations := REPLACE(locations, '""', '","') || ']';
+    :NEW.locations := locations;
+END;
+
 
 CREATE TABLE
   Person (

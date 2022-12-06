@@ -3,13 +3,13 @@ import * as fs from "fs";
 import * as oracledb from "oracledb";
 
 export const createSchema = async (pool: oracledb.Pool) => {
-  const connection = await pool.getConnection();
+  const cnx = await pool.getConnection();
   try {
     const filename = path.join(__dirname, "./schema.sql");
-    const statements = fs.readFileSync(filename, "utf8").split(";\n").filter(Boolean).slice(0, -1);
+    const statements = fs.readFileSync(filename, "utf8").split("\n\n").filter(Boolean);
     for (const statement of statements) {
       try {
-        await connection.execute(statement);
+        await cnx.execute(statement);
         console.info("Executed statement", statement);
       } catch (err) {
         const error = err as { errorNum: number; message: string };
@@ -21,9 +21,9 @@ export const createSchema = async (pool: oracledb.Pool) => {
         throw new Error(error?.message);
       }
     }
-    await connection.close();
+    await cnx.close();
   } catch (err) {
     console.error(err);
-    await connection.close();
+    await cnx.close();
   }
 };

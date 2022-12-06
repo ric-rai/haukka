@@ -2,7 +2,7 @@
 
 -- INSERT:
 INSERT INTO
-  User_Account (metadata, user_identity, full_name, email)
+  Person (metadata, identity, name, email)
 VALUES
   (`:metadata`, `:id`, `:fullName`, `:emailAddress`);
 
@@ -10,6 +10,6 @@ VALUES
 SELECT
   *
 FROM
-  User_Account
+  Person
 WHERE
   email = `:email`;

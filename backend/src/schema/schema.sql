@@ -1,114 +1,104 @@
-CREATE TYPE METADATA AS OBJECT (
-  date_created DATE,
-  date_modified DATE,
-  is_deleted NUMBER (1, 0)
-) NOT FINAL;
+CREATE OR REPLACE FUNCTION create_metadata RETURN VARCHAR
+IS metadata VARCHAR(100);
+BEGIN
+    metadata := JSON_OBJECT(
+            'created' VALUE CURRENT_DATE,
+            'modified' VALUE CURRENT_DATE,
+            'isDeleted' VALUE '0');
+    RETURN metadata;
+END;
 
-CREATE TABLE
-  User_Account (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    user_identity VARCHAR(100) NOT NULL UNIQUE,
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    observatory INT,
-    CONSTRAINT email_is_unique UNIQUE (email)
-  );
-
-CREATE TABLE
-  Observatory (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    observatory_name VARCHAR(100) NOT NULL,
-    actions VARCHAR(500) NOT NULL,
-    CONSTRAINT observatory_name_is_unique UNIQUE (observatory_name)
-  );
+CREATE OR REPLACE FUNCTION update_metadata(prev IN VARCHAR) RETURN VARCHAR
+IS metadata VARCHAR(100);
+BEGIN
+    metadata := JSON_OBJECT(
+            'created' VALUE JSON_VALUE(prev, '$.created'),
+            'modified' VALUE CURRENT_DATE,
+            'isDeleted' VALUE JSON_VALUE(prev, '$.isDeleted') );
+    RETURN metadata;
+END;
 
 CREATE TABLE
   Observation_Type (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    observation_type_name VARCHAR(100) NOT NULL,
-    observatory REFERENCES Observatory NOT NULL,
-    CONSTRAINT unique_observation_type_in_observatory UNIQUE (observatory, observation_type_name)
-  );
+    name VARCHAR(100) PRIMARY KEY,
+    metadata VARCHAR(100) NOT NULL,
+    CONSTRAINT observation_type_metadata_is_json CHECK (metadata IS JSON)
+  )
+
+CREATE OR REPLACE TRIGGER create_observation_type_metadata
+    BEFORE INSERT ON Observation_Type FOR EACH ROW
+BEGIN :NEW.metadata := create_metadata(); END;
+
+CREATE OR REPLACE TRIGGER update_observation_type_metadata 
+    BEFORE UPDATE ON Observation_Type FOR EACH ROW
+BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
 
 CREATE TABLE
-  Observation_Location (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    location_name VARCHAR(100) NOT NULL,
-    observatory REFERENCES Observatory NOT NULL,
-    CONSTRAINT unique_location_in_observatory UNIQUE (observatory, location_name)
-  );
+  Observatory (
+    name VARCHAR(100) PRIMARY KEY,
+    metadata VARCHAR(100) NOT NULL,
+    actions VARCHAR(1000) NOT NULL,
+    locations VARCHAR(1000) NOT NULL,
+    observation_types VARCHAR(1000) NOT NULL,
+    CONSTRAINT observatory_metadata_is_json CHECK (metadata IS JSON),
+    CONSTRAINT observatory_actions_is_json CHECK (actions IS JSON),
+    CONSTRAINT observatory_locations_is_json CHECK (locations IS JSON),
+    CONSTRAINT observatory_observation_types_is_json CHECK (observation_types IS JSON)
+  )
+
+CREATE OR REPLACE TRIGGER create_observatory_metadata
+    BEFORE INSERT ON Observatory FOR EACH ROW
+BEGIN :NEW.metadata := create_metadata(); END;
+
+CREATE OR REPLACE TRIGGER update_observatory_metadata 
+    BEFORE UPDATE ON Observatory FOR EACH ROW
+BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
+
+CREATE OR REPLACE TRIGGER validate_observatory_observation_types 
+    BEFORE INSERT ON OBSERVATORY FOR EACH ROW
+DECLARE
+    type_list VARCHAR(100);
+    type_name VARCHAR(100);
+BEGIN
+    FOR obs_type IN (
+      SELECT ot.type_name FROM 
+        JSON_TABLE(:NEW.observation_types, '$[*]' 
+          COLUMNS(type_name VARCHAR(100) PATH '$' ERROR ON ERROR)
+        ) as ot
+    )
+    LOOP
+        SELECT name INTO type_name FROM observation_type WHERE name = obs_type.type_name;
+    END LOOP;
+END;
 
 CREATE TABLE
-  Observatory_Day (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    observatory_day DATE NOT NULL,
-    note VARCHAR(1000),
-    observers VARCHAR(200) NOT NULL,
-    selected_actions VARCHAR(500) NOT NULL,
-    observatory REFERENCES Observatory NOT NULL
-  );
+  Person (
+    id NUMBER PRIMARY KEY,
+    metadata VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    observatory VARCHAR(100) REFERENCES Observatory (name),
+    CONSTRAINT person_metadata_is_json CHECK (metadata IS JSON)
+  )
+
+CREATE OR REPLACE TRIGGER create_person_metadata
+    BEFORE INSERT ON Person FOR EACH ROW
+BEGIN :NEW.metadata := create_metadata(); END;
+
+CREATE OR REPLACE TRIGGER update_person_metadata 
+    BEFORE UPDATE ON Person FOR EACH ROW
+BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
 
 CREATE TABLE
-  Observation_Catch (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    catch_type VARCHAR(100) NOT NULL,
-    catch_location VARCHAR(100) NOT NULL,
-    net_code VARCHAR(100),
-    amount INT NOT NULL,
-    catch_length INT NOT NULL,
-    opened_at VARCHAR(100) NOT NULL,
-    closed_at VARCHAR(100) NOT NULL,
-    day_row_number INT NOT NULL,
-    observatory_day REFERENCES Observatory_Day NOT NULL
-  );
-
-CREATE TABLE
-  Observation_Period (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    start_time DATE NOT NULL,
-    end_time DATE NOT NULL,
-    observation_type REFERENCES Observation_Type NOT NULL,
-    observation_location REFERENCES Observation_Location NOT NULL,
-    observatory_day REFERENCES Observatory_Day NOT NULL
-  );
-
-CREATE TABLE
-  Shorthand (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    shorthand_block VARCHAR(4000) NOT NULL,
-    observation_period REFERENCES Observation_Period NOT NULL
-  );
-
-CREATE TABLE
-  Observation (
-    id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    metadata METADATA NOT NULL,
-    species VARCHAR(100) NOT NULL,
-    adult_unknown_count INT NOT NULL,
-    adult_female_count INT NOT NULL,
-    adult_male_count INT NOT NULL,
-    juvenile_unknown_count INT NOT NULL,
-    juvenile_female_count INT NOT NULL,
-    juvenile_male_count INT NOT NULL,
-    subadult_unknown_count INT NOT NULL,
-    subadult_female_count INT NOT NULL,
-    subadult_male_count INT NOT NULL,
-    unknown_unknown_count INT NOT NULL,
-    unknown_female_count INT NOT NULL,
-    unknown_male_count INT NOT NULL,
-    total_count INT NOT NULL,
-    direction VARCHAR(100),
-    bypass_side VARCHAR(100),
-    notes VARCHAR(1000),
-    observation_period REFERENCES Observation_Period NOT NULL,
-    shorthand REFERENCES Shorthand,
-    user_account REFERENCES User_Account NOT NULL
-  );
+  Day (
+    date_date DATE GENERATED ALWAYS AS (
+      JSON_VALUE (data, '$.date' RETURNING DATE ERROR ON ERROR)
+    ) PRIMARY KEY,
+    metadata VARCHAR(100) NOT NULL,
+    data BLOB NOT NULL,
+    observatory VARCHAR(100) GENERATED ALWAYS AS (  
+      JSON_VALUE (data, '$.observatory' RETURNING VARCHAR(100) ERROR ON ERROR)
+    ) REFERENCES Observatory (name),
+    CONSTRAINT day_metadata_is_json CHECK (metadata IS JSON),
+    CONSTRAINT day_data_is_json CHECK (data IS JSON)
+  )

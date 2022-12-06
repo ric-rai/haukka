@@ -3,10 +3,8 @@ import * as express from "express";
 import * as path from "path";
 import oracledb = require("oracledb");
 import { createSchema } from "./schema/create";
-import { ObservatoryService } from "./services/observatory/observatory";
-import { MetadataService } from "./services/metadata/metadata";
-import { LocationService } from "./services/location/location";
 import { ObservationTypeService } from "./services/observationType/observationType";
+import { ObservatoryService } from "./services/observatory/observatory";
 import { AccountService } from "./services/account/account";
 import { initialize } from "express-openapi";
 import { apiDoc } from "./api/v1/apiDoc";
@@ -29,11 +27,9 @@ app.use(express.static(path.join(__dirname, "public")));
     connectString: `${HOSTNAME}/${SERVICE_ID}`,
   });
   await createSchema(pool);
-  const metadataService = await MetadataService();
-  const observatoryService = await ObservatoryService(pool, metadataService);
-  const locationService = await LocationService(pool, metadataService, observatoryService);
-  const obsTypeService = await ObservationTypeService(pool, metadataService, observatoryService);
-  const accountService = await AccountService(pool, metadataService);
+  const observationTypeService = await ObservationTypeService(pool);
+  const observatoryService = await ObservatoryService(pool);
+  const accountService = await AccountService(pool);
 
   initialize({
     app,

@@ -40,6 +40,23 @@ export const ObservatoryService = async (pool: oracledb.Pool) => {
   await cnx.close();
 
   return {
+    getAll: async (): Promise<Observatory[]> => {
+      const cnx = await pool.getConnection();
+      const selectAll = `SELECT * FROM Observatory`;
+      const { rows } = (await cnx.execute(selectAll)) as Result;
+      await cnx.close();
+      if (!rows) return [];
+      return rows.map(
+        (row) =>
+          ({
+            name: row[0],
+            metadata: row[1],
+            actions: row[2],
+            locations: row[3],
+            observation_types: row[4],
+          } as Observatory)
+      );
+    },
     getByName: async (name: string): Promise<Observatory | null> => {
       const cnx = await pool.getConnection();
       const selectByName = `SELECT * FROM Observatory WHERE name = :name`;

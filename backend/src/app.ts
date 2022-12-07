@@ -7,7 +7,6 @@ import { ObservationTypeService } from "./services/observationType";
 import { ObservatoryService } from "./services/observatory";
 import { AccountService } from "./services/account";
 import { initialize } from "express-openapi";
-import { apiDoc } from "./api/v1/apiDoc";
 
 const { NODE_ENV } = process.env;
 const envPath = NODE_ENV === "development" ? ".env.development" : ".env.production";
@@ -18,6 +17,8 @@ const app = express();
 const port = PORT || 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
+
+oracledb.fetchAsBuffer = [oracledb.BLOB];
 
 (async () => {
   const pool = await oracledb.createPool({
@@ -33,7 +34,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
   initialize({
     app,
-    apiDoc,
+    apiDoc: "./src/api/v1/apiDoc.yml",
     dependencies: {
       accountService,
       observatoryService,

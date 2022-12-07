@@ -5,13 +5,13 @@ import { AccountService } from "../../../services/account";
 const { TARGET, AUTH_DOMAIN } = process.env;
 const JWT_SECRET = "goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu";
 
-export default function (account: AccountService) {
+export default function (accountService: AccountService) {
   const GET: Operation = async (req, res, next) => {
     if (req.query.token) {
       if (typeof req.query.token !== "string")
         return res.status(400).send(`Invalid query parameter 'token': ${req.query.token}`);
 
-      const result = await account.getAccount(req.query.token);
+      const result = await accountService.getAccount(req.query.token);
       if (result === 404)
         return res.status(404).send(`Unable to find user data for ${req.query.token}`);
       if (result === 403) return res.status(403).send(`User doesn't have required role!`);

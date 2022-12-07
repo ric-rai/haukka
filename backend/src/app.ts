@@ -33,9 +33,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
   initialize({
     app,
-    apiDoc: apiDoc,
+    apiDoc,
     dependencies: {
-      account: accountService,
+      accountService,
+      observatoryService,
     },
     paths: "./dist/api/v1/paths",
   });

@@ -110,29 +110,29 @@ CREATE OR REPLACE TRIGGER update_person_metadata
 BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
 
 CREATE TABLE
-  Day (
-    id DATE GENERATED ALWAYS AS (
-      JSON_VALUE (data, '$.date' RETURNING DATE ERROR ON ERROR)
-    ) PRIMARY KEY,
+  Observatory_day (
+    day DATE GENERATED ALWAYS AS (
+      JSON_VALUE (data, '$.date' RETURNING DATE ERROR ON ERROR)),
     metadata VARCHAR(100) NOT NULL,
     data BLOB NOT NULL,
     observatory VARCHAR(100) GENERATED ALWAYS AS (  
       JSON_VALUE (data, '$.observatory' RETURNING VARCHAR(100) ERROR ON ERROR)
     ) REFERENCES Observatory (name),
+    CONSTRAINT composite_pk PRIMARY KEY (day, observatory),
     CONSTRAINT day_metadata_is_json CHECK (metadata IS JSON),
     CONSTRAINT day_data_is_json CHECK (data IS JSON)
   )
 
 CREATE OR REPLACE TRIGGER create_day_metadata
-    BEFORE INSERT ON Day FOR EACH ROW
+    BEFORE INSERT ON Observatory_day FOR EACH ROW
 BEGIN :NEW.metadata := create_metadata(); END;
 
 CREATE OR REPLACE TRIGGER update_day_metadata 
-    BEFORE UPDATE ON Day FOR EACH ROW
+    BEFORE UPDATE ON Observatory_day FOR EACH ROW
 BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
 
 CREATE OR REPLACE TRIGGER validate_day_data
-    BEFORE INSERT OR UPDATE ON Day FOR EACH ROW
+    BEFORE INSERT OR UPDATE ON Observatory_day FOR EACH ROW
 DECLARE
     to_integer INTEGER;
     to_varchar VARCHAR(100);
@@ -171,11 +171,11 @@ BEGIN
     LOOP
         to_varchar := JSON_VALUE(data.period, '$.type' ERROR ON ERROR);
         IF NOT obs_types LIKE '%"'||to_varchar||'"%' THEN
-            raise_application_error(-20001,'Observation type not found on an observatory!'); 
+            raise_application_error(-20001,'Observation type not found on the observatory!'); 
         END IF;
         to_varchar := JSON_VALUE(data.period, '$.location' ERROR ON ERROR);
         IF NOT locations LIKE '%"'||to_varchar||'"%' THEN
-            raise_application_error(-20001,'Location not found on an observatory!'); 
+            raise_application_error(-20001,'Location not found on the observatory!'); 
         END IF;
         to_integer := JSON_VALUE(data.period, '$.startTime' ERROR ON ERROR);
         to_integer := JSON_VALUE(data.period, '$.endTime' ERROR ON ERROR);

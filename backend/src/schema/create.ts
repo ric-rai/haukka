@@ -6,11 +6,15 @@ export const createSchema = async (pool: oracledb.Pool) => {
   const cnx = await pool.getConnection();
   try {
     const filename = path.join(__dirname, "./schema.sql");
-    const statements = fs.readFileSync(filename, "utf8").split("\n\n").filter(Boolean);
+    const statements = fs
+      .readFileSync(filename, "utf8")
+      .replace(/--.+?\n/g, "")
+      .split("\n\n")
+      .filter(Boolean);
     for (const statement of statements) {
       try {
         await cnx.execute(statement);
-        console.info("Executed statement", statement);
+        console.info("Executed statement", statement.match(/CREATE OR REPLACE \w+ \w+/)?.[0]);
       } catch (err) {
         const error = err as { errorNum: number; message: string };
         if (error?.errorNum === 955) {

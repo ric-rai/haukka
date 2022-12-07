@@ -50,39 +50,37 @@ interface Day<Observatory extends "Hangon_Lintuasema" | "Jurmon_Lintuasema"> {
     netLength: number;
     netCode: string;
   }>;
-  periods: [
-    {
-      type: Observatory extends "Hangon_Lintuasema"
-        ? "Vakio" | "Muu muutto" | "Yömuutto"
-        : Observatory extends "Jurmon_Lintuasema"
-        ? "Paikallinen" | "Hajahavainto" | "Vakio"
-        : never;
-      location: Observatory extends "Hangon_Lintuasema"
-        ? Array<"Bunkkeri" | "Piha" | "Eteläkärki" | "Metsä" | "Luoto Gåu">
-        : Observatory extends "Jurmon_Lintuasema"
-        ? Array<"Korkein kohta" | "Länsireitti">
-        : never;
-      startTime: number;
-      endTime: number;
-      observations: Array<{
-        species: string;
-        adultUnknownCount: number;
-        adultFemaleCount: number;
-        adultMaleCount: number;
-        juvenileUnknownCount: number;
-        juvenileFemaleCount: number;
-        juvenileMaleCount: number;
-        subAdultUnknownCount: number;
-        subAdultFemaleCount: number;
-        subAdultMaleCount: number;
-        unknownUnknownCount: number;
-        unknownFemaleCount: number;
-        unknownMaleCount: number;
-        totalCount: number;
-        direction: string;
-        bypassSide: number;
-        notes: string;
-      }>;
-    }
-  ];
+  periods: Array<{
+    type: Observatory extends "Hangon_Lintuasema"
+      ? "Vakio" | "Muu muutto" | "Yömuutto"
+      : Observatory extends "Jurmon_Lintuasema"
+      ? "Paikallinen" | "Hajahavainto" | "Vakio"
+      : never;
+    location: Observatory extends "Hangon_Lintuasema"
+      ? Array<"Bunkkeri" | "Piha" | "Eteläkärki" | "Metsä" | "Luoto Gåu">
+      : Observatory extends "Jurmon_Lintuasema"
+      ? Array<"Korkein kohta" | "Länsireitti">
+      : never;
+    startTime: number;
+    endTime: number;
+    observations: Array<{
+      species: string;
+      adultUnknownCount: number;
+      adultFemaleCount: number;
+      adultMaleCount: number;
+      juvenileUnknownCount: number;
+      juvenileFemaleCount: number;
+      juvenileMaleCount: number;
+      subAdultUnknownCount: number;
+      subAdultFemaleCount: number;
+      subAdultMaleCount: number;
+      unknownUnknownCount: number;
+      unknownFemaleCount: number;
+      unknownMaleCount: number;
+      totalCount: number;
+      direction: string;
+      bypassSide: number;
+      notes: string;
+    }>;
+  }>;
 }

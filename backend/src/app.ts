@@ -3,9 +3,9 @@ import * as express from "express";
 import * as path from "path";
 import oracledb = require("oracledb");
 import { createSchema } from "./schema/create";
-import { ObservationTypeService } from "./services/observationType/observationType";
-import { ObservatoryService } from "./services/observatory/observatory";
-import { AccountService } from "./services/account/account";
+import { ObservationTypeService } from "./services/observationType";
+import { ObservatoryService } from "./services/observatory";
+import { AccountService } from "./services/account";
 import { initialize } from "express-openapi";
 import { apiDoc } from "./api/v1/apiDoc";
 

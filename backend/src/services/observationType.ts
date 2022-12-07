@@ -1,5 +1,5 @@
 import oracledb = require("oracledb");
-import { locations } from "../../locations";
+import { locations } from "../locations";
 
 export type ObservationTypeService = Awaited<ReturnType<typeof ObservationTypeService>>;
 

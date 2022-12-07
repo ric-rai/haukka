@@ -1,6 +1,6 @@
 import { Operation } from "express-openapi";
 import * as jsonwebtoken from "jsonwebtoken";
-import { AccountService } from "../../../services/account/account";
+import { AccountService } from "../../../services/account";
 
 const { TARGET, AUTH_DOMAIN } = process.env;
 const JWT_SECRET = "goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu";

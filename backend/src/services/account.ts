@@ -1,5 +1,5 @@
 import oracledb = require("oracledb");
-import { https, LajiUser, parseStatements, TupleToObject } from "../../utils";
+import { https, LajiUser, TupleToObject } from "../utils";
 
 type UserRow = [number, string, string, string, string, number];
 type User = TupleToObject<
@@ -27,10 +27,10 @@ export const AccountService = async (pool: oracledb.Pool) => {
       let result = cnx.execute(selectByEmail, { email }) as Result;
       let account = result?.rows?.[0];
       if (!account) {
-        const sql = `INSERT INTO Person (id, name, email) VALUES (:id, :fullName, :emailAddress)`;
+        const insert = `INSERT INTO Person (id, name, email) VALUES (:id, :fullName, :emailAddress)`;
         const { id: lajiId, fullName, emailAddress } = lajiUser;
         const person = { id: lajiId.replace("MA.", ""), fullName, emailAddress };
-        await cnx.execute(sql, person);
+        await cnx.execute(insert, person);
         await cnx.commit();
         result = await cnx.execute(selectByEmail, { email });
         account = result?.rows?.[0];

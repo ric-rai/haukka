@@ -5,7 +5,7 @@ import { locations } from "../locations";
 type ObservatoryRow = [string, string, string, string, string];
 type Observatory = TupleToObject<
   ObservatoryRow,
-  ["name", "metadata", "actions", "locations", "observation_types"]
+  ["name", "metadata", "actions", "locations", "observationTypes"]
 >;
 type Result = oracledb.Result<ObservatoryRow>;
 
@@ -53,7 +53,7 @@ export const ObservatoryService = async (pool: oracledb.Pool) => {
             metadata: row[1],
             actions: row[2],
             locations: row[3],
-            observation_types: row[4],
+            observationTypes: row[4],
           } as Observatory)
       );
     },
@@ -68,7 +68,7 @@ export const ObservatoryService = async (pool: oracledb.Pool) => {
         metadata: rows[0][1],
         actions: rows[0][2],
         locations: rows[0][3],
-        observation_types: rows[0][4],
+        observationTypes: rows[0][4],
       };
     },
   };

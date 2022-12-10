@@ -15,5 +15,10 @@
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "**/generated/*.ts",
+    "**/generated/core",
+    "**/generated/services"
   ]
 }

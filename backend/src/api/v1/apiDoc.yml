@@ -23,17 +23,84 @@ paths:
             text/plain:
               schema:
                 type: string
+
   /observatory:
     get:
       summary: All observatories
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observatory'
+               
+  /observatory/{name}:
+    parameters:
+    - in: path 
+      name: name 
+      required: true 
+      schema:
+        type: string
+    get:
+      summary: Get observatory by name. 
       parameters: []
       responses:
         '200':
           description: Success
           content:
-            'application/json:': {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observatory' 
+
 components:
   schemas:
+    Metadata:
+      type: object
+      properties:
+        created:
+          type: integer
+        modified:
+          type: integer
+        isDeleted:
+          type: boolean
+
+    Locations:
+      type: array
+      items:
+        type: string
+
+    ObservationTypes: 
+      type: array
+      items:
+        type: string
+
+    Observatory:
+      type: object
+      properties:
+        name:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/Metadata' 
+        actions:
+          type: array
+          items:
+            type: object 
+            properties:
+              actions:
+                type: array
+                items:
+                  type: string
+              type:
+                type: string 
+                enum: [TickBox, Numeric]
+        locations:
+          $ref: '#/components/schemas/Locations'
+        observationTypes:
+          $ref: '#/components/schemas/ObservationTypes'
+
     ObservatoryDay:
       type: object
       properties:

@@ -6,7 +6,7 @@ export const locations = {
       observationTypes: ["Vakio", "Muu muutto", "Yömuutto"],
       actions: [
         {
-          type: "Tickbox",
+          type: "TickBox",
           actions: ["standardObs", "gåu", "standardRing", "owlStandard", "mammals"],
         },
         {
@@ -28,7 +28,7 @@ export const locations = {
       ],
       actions: [
         {
-          type: "Tickbox",
+          type: "TickBox",
           actions: ["testi"],
         },
       ],

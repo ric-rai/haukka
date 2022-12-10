@@ -5,6 +5,33 @@ servers:
 info:
   title: Haukka
   version: 1.0.0
+paths:
+  /login:
+    get:
+      summary: Handles login after the user has been authenticated.
+      operationId: getAccount
+      parameters:
+      - in: query
+        name: token
+        required: false
+        schema:
+          type: string
+      responses:
+        '304':
+          description: Redirect to the root.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /observatory:
+    get:
+      summary: All observatories
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            'application/json:': {}
 components:
   schemas:
     ObservatoryDay:
@@ -92,5 +119,4 @@ components:
                       type: integer 
                     notes:
                       type: string 
-paths: {}
   

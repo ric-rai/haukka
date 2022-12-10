@@ -50,10 +50,10 @@ export const ObservatoryService = async (pool: oracledb.Pool) => {
         (row) =>
           ({
             name: row[0],
-            metadata: row[1],
-            actions: row[2],
-            locations: row[3],
-            observationTypes: row[4],
+            metadata: JSON.parse(row[1], (k, v) => (k === "isDeleted" ? parseInt(v) : v)),
+            actions: JSON.parse(row[2]),
+            locations: JSON.parse(row[3]),
+            observationTypes: JSON.parse(row[4]),
           } as Observatory)
       );
     },
@@ -65,10 +65,10 @@ export const ObservatoryService = async (pool: oracledb.Pool) => {
       if (!rows) return null;
       return {
         name: rows[0][0],
-        metadata: rows[0][1],
-        actions: rows[0][2],
-        locations: rows[0][3],
-        observationTypes: rows[0][4],
+        metadata: JSON.parse(rows[0][1], (k, v) => (k === "isDeleted" ? parseInt(v) : v)),
+        actions: JSON.parse(rows[0][2]),
+        locations: JSON.parse(rows[0][3]),
+        observationTypes: JSON.parse(rows[0][4]),
       };
     },
   };

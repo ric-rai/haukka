@@ -11,9 +11,11 @@
     "oracledb": "^5.1.0"
   },
   "devDependencies": {
+    "@types/node": "^14.18.34",
     "@types/express": "^4.17.14",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/oracledb": "^5.2.3",
+    "openapi-typescript-codegen": "^0.23.0",
     "prettier": "^2.7.1",
     "prettier-plugin-sql": "^0.12.1",
     "ts-node": "^10.9.1",
@@ -21,7 +23,7 @@
   },
   "scripts": {
     "start": "npm run build && node dist/app.js",
-    "build": "tsc -p .",
-    "postbuild": "rsync -a --include='*/' --include='*.sql' --exclude='*' ./src/ ./dist"
+    "generate": "ts-node scripts/generate.ts",
+    "build": "tsc -p ."
   }
 }

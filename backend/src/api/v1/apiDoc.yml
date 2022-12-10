@@ -61,11 +61,14 @@ components:
       type: object
       properties:
         created:
-          type: integer
+          type: string 
+          format: date-time
         modified:
-          type: integer
+          type: string 
+          format: date-time
         isDeleted:
-          type: boolean
+          type: integer 
+          enum: [0, 1]
 
     Locations:
       type: array

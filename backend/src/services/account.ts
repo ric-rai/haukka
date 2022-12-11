@@ -1,13 +1,18 @@
 import oracledb = require("oracledb");
-import { EmptyResult, https, isNotEmptyResult, LajiUser, TupleToObject } from "../utils";
+import { https, LajiUser } from "../utils";
 import { ServiceError } from "../error";
+import { Metadata } from "../api/v1/generated/models/Metadata";
 
-type UserRow = [number, string, string, string, string, number];
-type User = TupleToObject<
-  UserRow,
-  ["id", "metadata", "identity", "fullName", "email", "observatory"]
->;
-type Result = oracledb.Result<UserRow> | EmptyResult;
+type UserRow = [number, string, string, string, string, string];
+type User = {
+  id: number;
+  metadata: Metadata;
+  identity: string;
+  fullName: string;
+  email: string;
+  observatory: string;
+};
+type Result = oracledb.Result<UserRow>;
 
 export type AccountService = Awaited<ReturnType<typeof AccountService>>;
 
@@ -16,7 +21,7 @@ export const AccountService = async (pool: oracledb.Pool) => {
   if (!ALLOWED_ROLES) throw new Error("Missing ALLOWED_ROLES");
 
   return {
-    getAccount: async (personToken: string) => {
+    getAccount: async (personToken: string): Promise<User> => {
       const apiUrl = `${API_DOMAIN}/v0/person/${personToken}?access_token=${API_TOKEN}`;
       const response = await https.get(apiUrl).catch((err) => {
         throw new ServiceError(502, err);
@@ -50,12 +55,12 @@ export const AccountService = async (pool: oracledb.Pool) => {
 
       return {
         id: account[0],
-        metadata: account[1],
+        metadata: JSON.parse(account[1]),
         identity: account[2],
         fullName: account[3],
         email: account[4],
         observatory: account[5],
-      } as User;
+      };
     },
   };
 };

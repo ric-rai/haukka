@@ -125,6 +125,10 @@ components:
         isDeleted:
           type: integer 
           enum: [0, 1]
+      required:
+        - created
+        - modified
+        - isDeleted
 
     Locations:
       type: array
@@ -159,6 +163,12 @@ components:
           $ref: '#/components/schemas/Locations'
         observationTypes:
           $ref: '#/components/schemas/ObservationTypes'
+      required:
+        - name
+        - metadata
+        - actions
+        - locations
+        - observationTypes
 
     ObservatoryDay:
       type: object

@@ -7,13 +7,13 @@ import type { Metadata } from './Metadata';
 import type { ObservationTypes } from './ObservationTypes';
 
 export type Observatory = {
-    name?: string;
-    metadata?: Metadata;
-    actions?: Array<{
+    name: string;
+    metadata: Metadata;
+    actions: Array<{
         actions?: Array<string>;
         type?: 'TickBox' | 'Numeric';
     }>;
-    locations?: Locations;
-    observationTypes?: ObservationTypes;
+    locations: Locations;
+    observationTypes: ObservationTypes;
 };
 

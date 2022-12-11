@@ -3,9 +3,9 @@
 /* eslint-disable */
 
 export type Metadata = {
-    created?: string;
-    modified?: string;
-    isDeleted?: Metadata.isDeleted;
+    created: string;
+    modified: string;
+    isDeleted: Metadata.isDeleted;
 };
 
 export namespace Metadata {

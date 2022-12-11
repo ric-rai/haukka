@@ -128,6 +128,7 @@ export type ApiDoc = {
           modified: { type: "string"; format: "date-time" };
           isDeleted: { type: "integer"; enum: [0, 1] };
         };
+        required: ["created", "modified", "isDeleted"];
       };
       Locations: { type: "array"; items: { type: "string" } };
       ObservationTypes: { type: "array"; items: { type: "string" } };
@@ -149,6 +150,13 @@ export type ApiDoc = {
           locations: { $ref: "#/components/schemas/Locations" };
           observationTypes: { $ref: "#/components/schemas/ObservationTypes" };
         };
+        required: [
+          "name",
+          "metadata",
+          "actions",
+          "locations",
+          "observationTypes"
+        ];
       };
       ObservatoryDay: {
         type: "object";

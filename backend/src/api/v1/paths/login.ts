@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { Operation } from "express-openapi";
 import * as jsonwebtoken from "jsonwebtoken";
 import { AccountService } from "../../../services/account";

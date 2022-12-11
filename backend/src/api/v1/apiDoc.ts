@@ -19,7 +19,6 @@ export type ApiDoc = {
           "304": {
             description: "Redirect to the laji authentication if token was not provided. Redirect to the root if token was provided. \n";
             content: { "text/plain": { schema: { type: "string" } } };
-            schema: { type: "string" };
           };
           default: {
             description: "Error";
@@ -28,7 +27,6 @@ export type ApiDoc = {
                 schema: { $ref: "#/components/schemas/Error" };
               };
             };
-            schema: { $ref: "#/components/schemas/Error" };
           };
         };
       };
@@ -48,10 +46,6 @@ export type ApiDoc = {
                 };
               };
             };
-            schema: {
-              type: "array";
-              items: { $ref: "#/components/schemas/Observatory" };
-            };
           };
           default: {
             description: "Error";
@@ -60,7 +54,6 @@ export type ApiDoc = {
                 schema: { $ref: "#/components/schemas/Error" };
               };
             };
-            schema: { $ref: "#/components/schemas/Error" };
           };
         };
       };
@@ -72,7 +65,6 @@ export type ApiDoc = {
       get: {
         summary: "Get observatory by name.";
         operationId: "getObservatoryByName";
-        parameters: [];
         responses: {
           "200": {
             description: "Success";
@@ -81,7 +73,6 @@ export type ApiDoc = {
                 schema: { $ref: "#/components/schemas/Observatory" };
               };
             };
-            schema: { $ref: "#/components/schemas/Observatory" };
           };
           default: {
             description: "Error";
@@ -90,7 +81,37 @@ export type ApiDoc = {
                 schema: { $ref: "#/components/schemas/Error" };
               };
             };
-            schema: { $ref: "#/components/schemas/Error" };
+          };
+        };
+      };
+    };
+    "/observatory/{name}/day": {
+      post: {
+        summary: "Add new observatory day.";
+        operationId: "newObservatoryDay";
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/ObservatoryDay" };
+            };
+          };
+        };
+        responses: {
+          "200": {
+            description: "Success";
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ObservatoryDay" };
+              };
+            };
+          };
+          default: {
+            description: "Error";
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" };
+              };
+            };
           };
         };
       };
@@ -119,7 +140,7 @@ export type ApiDoc = {
           };
           invalidResponse: { type: "object" };
         };
-        required: ["name", "cause", "message"];
+        required: ["cause"];
       };
       Metadata: {
         type: "object";
@@ -130,25 +151,52 @@ export type ApiDoc = {
         };
         required: ["created", "modified", "isDeleted"];
       };
-      Locations: { type: "array"; items: { type: "string" } };
-      ObservationTypes: { type: "array"; items: { type: "string" } };
-      Observatory: {
+      Location_HangonLintuasema: {
+        type: "string";
+        enum: ["Bunkkeri", "Piha", "Eteläkärki", "Metsä", "Luoto Gåu"];
+      };
+      ObservationType_HangonLintuasema: {
+        type: "string";
+        enum: ["Vakio", "Muu muutto", "Yömuutto"];
+      };
+      HangonLintuasema: {
         type: "object";
         properties: {
-          name: { type: "string" };
+          name: { type: "string"; enum: ["Hangon_Lintuasema"] };
           metadata: { $ref: "#/components/schemas/Metadata" };
           actions: {
-            type: "array";
-            items: {
-              type: "object";
-              properties: {
-                actions: { type: "array"; items: { type: "string" } };
-                type: { type: "string"; enum: ["TickBox", "Numeric"] };
+            type: "object";
+            properties: {
+              tickBox: {
+                type: "array";
+                items: {
+                  type: "string";
+                  enum: [
+                    "standardObs",
+                    "gåu",
+                    "standardRing",
+                    "owlStandard",
+                    "mammals"
+                  ];
+                };
+              };
+              numeric: {
+                type: "array";
+                items: { type: "string"; enum: ["attachments"] };
               };
             };
+            required: ["tickBox", "numeric"];
           };
-          locations: { $ref: "#/components/schemas/Locations" };
-          observationTypes: { $ref: "#/components/schemas/ObservationTypes" };
+          locations: {
+            type: "array";
+            items: { $ref: "#/components/schemas/Location_HangonLintuasema" };
+          };
+          observationTypes: {
+            type: "array";
+            items: {
+              $ref: "#/components/schemas/ObservationType_HangonLintuasema";
+            };
+          };
         };
         required: [
           "name",
@@ -158,10 +206,135 @@ export type ApiDoc = {
           "observationTypes"
         ];
       };
-      ObservatoryDay: {
+      Location_JurmonLintuasema: {
+        type: "string";
+        enum: ["Korkein kohta", "Länsireitti"];
+      };
+      ObservationType_JurmonLintuasema: {
+        type: "string";
+        enum: [
+          "Paikallinen",
+          "Hajahavainto",
+          "Vakio",
+          "Esimerkki1",
+          "Esimerkki2",
+          "Esimerkki3"
+        ];
+      };
+      JurmonLintuasema: {
         type: "object";
         properties: {
-          observatory: { type: "string" };
+          name: { type: "string"; enum: ["Jurmon_Lintuasema"] };
+          metadata: { $ref: "#/components/schemas/Metadata" };
+          actions: {
+            type: "object";
+            properties: {
+              tickBox: {
+                type: "array";
+                items: {
+                  type: "string";
+                  enum: [
+                    "standardObs",
+                    "gåu",
+                    "standardRing",
+                    "owlStandard",
+                    "mammals"
+                  ];
+                };
+              };
+              numeric: {
+                type: "array";
+                items: { type: "string"; enum: ["attachments"] };
+              };
+            };
+            required: ["tickBox", "numeric"];
+          };
+          locations: {
+            type: "array";
+            items: { $ref: "#/components/schemas/Location_JurmonLintuasema" };
+          };
+          observationTypes: {
+            type: "array";
+            items: {
+              $ref: "#/components/schemas/ObservationType_JurmonLintuasema";
+            };
+          };
+        };
+        required: [
+          "name",
+          "metadata",
+          "actions",
+          "locations",
+          "observationTypes"
+        ];
+      };
+      Observatory: {
+        oneOf: [
+          { $ref: "#/components/schemas/HangonLintuasema" },
+          { $ref: "#/components/schemas/JurmonLintuasema" }
+        ];
+      };
+      ObservatoryDay: {
+        oneOf: [
+          {
+            allOf: [
+              {
+                type: "object";
+                properties: {
+                  observatory: { type: "string"; enum: ["Hangon_Lintuasema"] };
+                  periods: {
+                    type: "array";
+                    items: {
+                      type: "object";
+                      properties: {
+                        type: {
+                          $ref: "#/components/schemas/ObservationType_HangonLintuasema";
+                        };
+                        location: {
+                          $ref: "#/components/schemas/Location_HangonLintuasema";
+                        };
+                      };
+                      required: ["type", "location"];
+                    };
+                  };
+                };
+                required: ["observatory", "periods"];
+              },
+              { $ref: "#/components/schemas/ObservatoryDayBase" }
+            ];
+          },
+          {
+            allOf: [
+              {
+                type: "object";
+                properties: {
+                  observatory: { type: "string"; enum: ["Jurmon_Lintuasema"] };
+                  periods: {
+                    type: "array";
+                    items: {
+                      type: "object";
+                      properties: {
+                        type: {
+                          $ref: "#/components/schemas/ObservationType_JurmonLintuasema";
+                        };
+                        location: {
+                          $ref: "#/components/schemas/Location_JurmonLintuasema";
+                        };
+                      };
+                      required: ["type", "location"];
+                    };
+                  };
+                };
+                required: ["observatory", "periods"];
+              },
+              { $ref: "#/components/schemas/ObservatoryDayBase" }
+            ];
+          }
+        ];
+      };
+      ObservatoryDayBase: {
+        type: "object";
+        properties: {
           date: { type: "string"; format: "date" };
           comment: { type: "string" };
           observers: { type: "array"; items: { type: "string" } };
@@ -171,8 +344,8 @@ export type ApiDoc = {
               type: "object";
               properties: {
                 type: { type: "string" };
-                openedAt: { type: "integer" };
-                closedAt: { type: "integer" };
+                openedAt: { type: "string"; format: "date-time" };
+                closedAt: { type: "string"; format: "date-time" };
                 amount: { type: "integer" };
                 location: { type: "string" };
                 netLength: { type: "integer" };
@@ -194,10 +367,8 @@ export type ApiDoc = {
             items: {
               type: "object";
               properties: {
-                type: { type: "string" };
-                location: { type: "string" };
-                startTime: { type: "integer" };
-                endTime: { type: "integer" };
+                startTime: { type: "string"; format: "date-time" };
+                endTime: { type: "string"; format: "date-time" };
                 observations: {
                   type: "array";
                   items: {
@@ -243,24 +414,11 @@ export type ApiDoc = {
                   };
                 };
               };
-              required: [
-                "type",
-                "location",
-                "startTime",
-                "endTime",
-                "observations"
-              ];
+              required: ["startTime", "endTime", "observations"];
             };
           };
         };
-        required: [
-          "observatory",
-          "date",
-          "comment",
-          "observers",
-          "catches",
-          "periods"
-        ];
+        required: ["date", "comment", "observers", "catches", "periods"];
       };
     };
   };

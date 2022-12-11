@@ -3,8 +3,8 @@
 /* eslint-disable */
 
 export type Error = {
-    name: string;
-    message: string;
+    name?: string;
+    message?: string;
     cause: string;
     stack?: string;
     code?: number;

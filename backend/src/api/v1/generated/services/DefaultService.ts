@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { Error } from '../models/Error';
 import type { Observatory } from '../models/Observatory';
+import type { ObservatoryDay } from '../models/ObservatoryDay';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
@@ -62,6 +63,24 @@ export class DefaultService {
             path: {
                 'name': name,
             },
+        });
+    }
+
+    /**
+     * Add new observatory day.
+     * @param requestBody
+     * @returns ObservatoryDay Success
+     * @returns Error Error
+     * @throws ApiError
+     */
+    public newObservatoryDay(
+        requestBody?: ObservatoryDay,
+    ): CancelablePromise<ObservatoryDay | Error> {
+        return this.httpRequest.request({
+            method: 'POST',
+            url: '/observatory/{name}/day',
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 

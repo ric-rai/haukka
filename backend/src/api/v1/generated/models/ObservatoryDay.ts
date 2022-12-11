@@ -2,44 +2,32 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ObservatoryDay = {
-    observatory: string;
-    date: string;
-    comment: string;
-    observers: Array<string>;
-    catches: Array<{
-        type: string;
-        openedAt: number;
-        closedAt: number;
-        amount: number;
-        location: string;
-        netLength: number;
-        netCode: string;
-    }>;
+import type { Location_HangonLintuasema } from './Location_HangonLintuasema';
+import type { Location_JurmonLintuasema } from './Location_JurmonLintuasema';
+import type { ObservationType_HangonLintuasema } from './ObservationType_HangonLintuasema';
+import type { ObservationType_JurmonLintuasema } from './ObservationType_JurmonLintuasema';
+import type { ObservatoryDayBase } from './ObservatoryDayBase';
+
+export type ObservatoryDay = (({
+    observatory: ObservatoryDay.observatory;
     periods: Array<{
-        type: string;
-        location: string;
-        startTime: number;
-        endTime: number;
-        observations: Array<{
-            species: string;
-            adultUnknownCount: number;
-            adultFemaleCount: number;
-            adultMaleCount: number;
-            juvenileUnknownCount: number;
-            juvenileFemaleCount: number;
-            juvenileMaleCount: number;
-            subAdultUnknownCount: number;
-            subAdultFemaleCount: number;
-            subAdultMaleCount: number;
-            unknownUnknownCount: number;
-            unknownFemaleCount: number;
-            unknownMaleCount: number;
-            totalCount: number;
-            direction: string;
-            bypassSide: number;
-            notes: string;
-        }>;
+        type: ObservationType_HangonLintuasema;
+        location: Location_HangonLintuasema;
     }>;
-};
+} & ObservatoryDayBase) | ({
+    observatory: ObservatoryDay.observatory;
+    periods: Array<{
+        type: ObservationType_JurmonLintuasema;
+        location: Location_JurmonLintuasema;
+    }>;
+} & ObservatoryDayBase));
+
+export namespace ObservatoryDay {
+
+    export enum observatory {
+        HANGON_LINTUASEMA = 'Hangon_Lintuasema',
+    }
+
+
+}
 

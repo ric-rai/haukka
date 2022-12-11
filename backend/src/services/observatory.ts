@@ -46,7 +46,7 @@ export const ObservatoryService = async (pool: oracledb.Pool) => {
       if (!rows || !rows.length) return [];
       return rows.map((row) => {
         return {
-          name: row[0],
+          name: row[0] as Observatory["name"],
           metadata: JSON.parse(row[1], (k, v) => (k === "isDeleted" ? parseInt(v) : v)),
           actions: JSON.parse(row[2]),
           locations: JSON.parse(row[3]),
@@ -62,7 +62,7 @@ export const ObservatoryService = async (pool: oracledb.Pool) => {
       let observatory = result?.rows?.[0];
       if (!observatory) throw new ServiceError(404, `Observatory ${name} not found!`);
       return {
-        name: observatory[0],
+        name: observatory[0] as Observatory["name"],
         metadata: JSON.parse(observatory[1], (k, v) => (k === "isDeleted" ? parseInt(v) : v)),
         actions: JSON.parse(observatory[2]),
         locations: JSON.parse(observatory[3]),

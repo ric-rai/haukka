@@ -10,10 +10,15 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Error } from './models/Error';
-export type { Locations } from './models/Locations';
+export { HangonLintuasema } from './models/HangonLintuasema';
+export { JurmonLintuasema } from './models/JurmonLintuasema';
+export { Location_HangonLintuasema } from './models/Location_HangonLintuasema';
+export { Location_JurmonLintuasema } from './models/Location_JurmonLintuasema';
 export { Metadata } from './models/Metadata';
-export type { ObservationTypes } from './models/ObservationTypes';
+export { ObservationType_HangonLintuasema } from './models/ObservationType_HangonLintuasema';
+export { ObservationType_JurmonLintuasema } from './models/ObservationType_JurmonLintuasema';
 export type { Observatory } from './models/Observatory';
-export type { ObservatoryDay } from './models/ObservatoryDay';
+export { ObservatoryDay } from './models/ObservatoryDay';
+export type { ObservatoryDayBase } from './models/ObservatoryDayBase';
 
 export { DefaultService } from './services/DefaultService';

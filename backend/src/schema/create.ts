@@ -14,7 +14,10 @@ export const createSchema = async (pool: oracledb.Pool) => {
     for (const statement of statements) {
       try {
         await cnx.execute(statement);
-        console.info("Executed statement", statement.match(/CREATE OR REPLACE \w+ \w+/)?.[0]);
+        console.info(
+          "Executed statement",
+          statement.match(/CREATE (OR REPLACE|TABLE\n)(\w| )+/)?.[0]
+        );
       } catch (err) {
         const error = err as { errorNum: number; message: string };
         if (error?.errorNum === 955) {

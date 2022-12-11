@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import OpenAPIResponseValidator from "openapi-response-validator";
-import { ApiDoc } from "./api/v1/apiDoc";
 
 type OpenApiValidationError = ReturnType<OpenAPIResponseValidator["validateResponse"]>;
-type StatusCode = 503 | 502 | 500 | 404 | 403;
+type StatusCode = 503 | 502 | 500 | 404 | 403 | 400;
 
 export const errorHandler = (
   err: Error | (Error & { code: StatusCode }),
@@ -11,11 +10,19 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err.stack);
+  err.stack && console.error(err.stack);
   let code, error;
-  if ("code" in err) {
+  // If there is no stack, it is probably express-openapi request validation error
+  if (!err.stack) {
+    code = (err as unknown as { status: StatusCode }).status;
+    if (code === 400) {
+      error = { cause: "400 Bad Request", ...err };
+    }
+    // All Error classes defined in this file have a code property.
+  } else if ("code" in err) {
     code = err.code;
     error = err;
+    // This is the default error for all other errors.
   } else {
     code = 500;
     error = {
@@ -24,12 +31,7 @@ export const errorHandler = (
       message: err.message,
     };
   }
-  const { apiDoc } = req as typeof req & { apiDoc: ApiDoc };
-  const validator = new OpenAPIResponseValidator({
-    responses: { default: { schema: { $ref: "#/components/schemas/Error" } } },
-    components: apiDoc.components,
-  });
-  const validationError = validator.validateResponse("default", error);
+  const validationError = res.validateResponse("default", error);
   if (validationError) {
     console.error(`Check error schema definitions!`);
     console.error(validationError);

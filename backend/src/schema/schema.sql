@@ -110,7 +110,7 @@ CREATE OR REPLACE TRIGGER update_person_metadata
 BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
 
 CREATE TABLE
-  Observatory_day (
+  Observatory_Day (
     day DATE GENERATED ALWAYS AS (
       JSON_VALUE (data, '$.date' RETURNING DATE ERROR ON ERROR)),
     metadata VARCHAR(100) NOT NULL,
@@ -123,16 +123,17 @@ CREATE TABLE
     CONSTRAINT day_data_is_json CHECK (data IS JSON)
   )
 
-CREATE OR REPLACE TRIGGER create_day_metadata
-    BEFORE INSERT ON Observatory_day FOR EACH ROW
+CREATE OR REPLACE TRIGGER create_observatory_day_metadata
+    BEFORE INSERT ON Observatory_Day FOR EACH ROW 
 BEGIN :NEW.metadata := create_metadata(); END;
 
-CREATE OR REPLACE TRIGGER update_day_metadata 
-    BEFORE UPDATE ON Observatory_day FOR EACH ROW
+CREATE OR REPLACE TRIGGER update_observatory_day_metadata
+    BEFORE UPDATE ON Observatory_Day FOR EACH ROW
 BEGIN :NEW.metadata := update_metadata(:OLD.metadata); END;
 
-CREATE OR REPLACE TRIGGER validate_day_data
-    BEFORE INSERT OR UPDATE ON Observatory_day FOR EACH ROW
+CREATE OR REPLACE TRIGGER validate_observatory_day_data
+    BEFORE INSERT OR UPDATE ON Observatory_Day FOR EACH ROW
+    FOLLOWS create_observatory_day_metadata, update_observatory_day_metadata
 DECLARE
     to_integer INTEGER;
     to_varchar VARCHAR(100);
@@ -154,8 +155,8 @@ BEGIN
         COLUMNS(catch VARCHAR FORMAT JSON PATH '$' ERROR ON ERROR)) as d)
     LOOP
         to_varchar := JSON_VALUE(data.catch, '$.type' ERROR ON ERROR);
-        to_integer := JSON_VALUE(data.catch, '$.openedAt' ERROR ON ERROR);
-        to_integer := JSON_VALUE(data.catch, '$.closedAt' ERROR ON ERROR);
+        to_varchar := JSON_VALUE(data.catch, '$.openedAt' ERROR ON ERROR);
+        to_varchar := JSON_VALUE(data.catch, '$.closedAt' ERROR ON ERROR);
         to_integer := JSON_VALUE(data.catch, '$.amount' ERROR ON ERROR);
         to_varchar := JSON_VALUE(data.catch, '$.location' ERROR ON ERROR);
         to_integer := JSON_VALUE(data.catch, '$.netLength' ERROR ON ERROR);
@@ -177,8 +178,8 @@ BEGIN
         IF NOT locations LIKE '%"'||to_varchar||'"%' THEN
             raise_application_error(-20001,'Location not found on the observatory!'); 
         END IF;
-        to_integer := JSON_VALUE(data.period, '$.startTime' ERROR ON ERROR);
-        to_integer := JSON_VALUE(data.period, '$.endTime' ERROR ON ERROR);
+        to_varchar := JSON_VALUE(data.period, '$.startTime' ERROR ON ERROR);
+        to_varchar := JSON_VALUE(data.period, '$.endTime' ERROR ON ERROR);
         obj := JSON_OBJECT_T(data.period);
         obj_keys := obj.get_keys;
         IF obj_keys.count != 5 THEN

@@ -178,6 +178,15 @@ export type ApiDoc = {
                 netLength: { type: "integer" };
                 netCode: { type: "string" };
               };
+              required: [
+                "type",
+                "openedAt",
+                "closedAt",
+                "amount",
+                "location",
+                "netLength",
+                "netCode"
+              ];
             };
           };
           periods: {
@@ -212,12 +221,46 @@ export type ApiDoc = {
                       bypassSide: { type: "integer" };
                       notes: { type: "string" };
                     };
+                    required: [
+                      "species",
+                      "adultUnknownCount",
+                      "adultFemaleCount",
+                      "adultMaleCount",
+                      "juvenileUnknownCount",
+                      "juvenileFemaleCount",
+                      "juvenileMaleCount",
+                      "subAdultUnknownCount",
+                      "subAdultFemaleCount",
+                      "subAdultMaleCount",
+                      "unknownUnknownCount",
+                      "unknownFemaleCount",
+                      "unknownMaleCount",
+                      "totalCount",
+                      "direction",
+                      "bypassSide",
+                      "notes"
+                    ];
                   };
                 };
               };
+              required: [
+                "type",
+                "location",
+                "startTime",
+                "endTime",
+                "observations"
+              ];
             };
           };
         };
+        required: [
+          "observatory",
+          "date",
+          "comment",
+          "observers",
+          "catches",
+          "periods"
+        ];
       };
     };
   };

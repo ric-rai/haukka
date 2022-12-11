@@ -7,6 +7,7 @@ import { ObservationTypeService } from "./services/observationType";
 import { ObservatoryService } from "./services/observatory";
 import { AccountService } from "./services/account";
 import { initialize } from "express-openapi";
+import { errorHandler } from "./error";
 
 const { NODE_ENV } = process.env;
 const envPath = NODE_ENV === "development" ? ".env.development" : ".env.production";
@@ -40,6 +41,7 @@ oracledb.fetchAsBuffer = [oracledb.BLOB];
       observatoryService,
     },
     paths: "./dist/api/v1/paths",
+    errorMiddleware: errorHandler,
   });
 })().catch((err) => {
   console.error(err);

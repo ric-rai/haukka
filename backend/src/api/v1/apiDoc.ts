@@ -5,7 +5,7 @@ export type ApiDoc = {
   paths: {
     "/login": {
       get: {
-        summary: "Handles login after the user has been authenticated.";
+        summary: "Handles user login.";
         operationId: "getAccount";
         parameters: [
           {
@@ -17,9 +17,18 @@ export type ApiDoc = {
         ];
         responses: {
           "304": {
-            description: "Redirect to the root.";
+            description: "Redirect to the laji authentication if token was not provided. Redirect to the root if token was provided. \n";
             content: { "text/plain": { schema: { type: "string" } } };
             schema: { type: "string" };
+          };
+          default: {
+            description: "Error";
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" };
+              };
+            };
+            schema: { $ref: "#/components/schemas/Error" };
           };
         };
       };
@@ -27,6 +36,7 @@ export type ApiDoc = {
     "/observatory": {
       get: {
         summary: "All observatories";
+        operationId: "getObservatories";
         responses: {
           "200": {
             description: "Success";
@@ -43,6 +53,15 @@ export type ApiDoc = {
               items: { $ref: "#/components/schemas/Observatory" };
             };
           };
+          default: {
+            description: "Error";
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" };
+              };
+            };
+            schema: { $ref: "#/components/schemas/Error" };
+          };
         };
       };
     };
@@ -52,6 +71,7 @@ export type ApiDoc = {
       ];
       get: {
         summary: "Get observatory by name.";
+        operationId: "getObservatoryByName";
         parameters: [];
         responses: {
           "200": {
@@ -63,18 +83,50 @@ export type ApiDoc = {
             };
             schema: { $ref: "#/components/schemas/Observatory" };
           };
+          default: {
+            description: "Error";
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" };
+              };
+            };
+            schema: { $ref: "#/components/schemas/Error" };
+          };
         };
       };
     };
   };
   components: {
     schemas: {
+      Error: {
+        type: "object";
+        properties: {
+          name: { type: "string" };
+          message: { type: "string" };
+          cause: { type: "string" };
+          stack: { type: "string" };
+          code: { type: "integer" };
+          validationErrors: {
+            type: "array";
+            items: {
+              properties: {
+                path: { type: "string" };
+                errorCode: { type: "string" };
+                message: { type: "string" };
+              };
+              required: ["path", "errorCode", "message"];
+            };
+          };
+          invalidResponse: { type: "object" };
+        };
+        required: ["name", "cause", "message"];
+      };
       Metadata: {
         type: "object";
         properties: {
-          created: { type: "integer" };
-          modified: { type: "integer" };
-          isDeleted: { type: "boolean" };
+          created: { type: "string"; format: "date-time" };
+          modified: { type: "string"; format: "date-time" };
+          isDeleted: { type: "integer"; enum: [0, 1] };
         };
       };
       Locations: { type: "array"; items: { type: "string" } };

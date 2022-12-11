@@ -18,10 +18,14 @@ export const AccountService = async (pool: oracledb.Pool) => {
   return {
     getAccount: async (personToken: string) => {
       const apiUrl = `${API_DOMAIN}/v0/person/${personToken}?access_token=${API_TOKEN}`;
-      const response = await https.get(apiUrl).catch((err) => console.error(err));
-      if (!response) throw new ServiceError(404, `Unable to find user data for ${personToken}`);
+      const response = await https.get(apiUrl).catch((err) => {
+        throw new ServiceError(502, err);
+      });
 
-      const lajiUser = JSON.parse(response) as LajiUser;
+      const lajiUser = JSON.parse(response) as LajiUser | object;
+      if ("error" in lajiUser) throw new ServiceError(502, lajiUser);
+      if (!("id" in lajiUser) || !lajiUser.id.startsWith("MA."))
+        throw new ServiceError(404, `Unable to find user data for ${personToken}`);
       if (!lajiUser.role.some((r) => ALLOWED_ROLES.includes(r)))
         throw new ServiceError(403, `User doesn't have required role!`);
 

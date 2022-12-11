@@ -25,6 +25,12 @@ paths:
             text/plain:
               schema:
                 type: string
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /observatory:
     get:
@@ -39,6 +45,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Observatory'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
                
   /observatory/{name}:
     parameters:
@@ -58,9 +70,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Observatory' 
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+        cause:
+          type: string
+        stack:
+          type: string
+        code:
+          type: integer
+        validationErrors:
+          type: array 
+          items:
+            properties:
+              path:
+                type: string 
+              errorCode:
+                type: string
+              message:
+                type: string
+            required:
+              - path
+              - errorCode
+              - message
+        invalidResponse:
+          type: object
+      required:
+        - name
+        - cause 
+        - message
+
     Metadata:
       type: object
       properties:

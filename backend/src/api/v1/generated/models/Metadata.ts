@@ -3,8 +3,18 @@
 /* eslint-disable */
 
 export type Metadata = {
-    created?: number;
-    modified?: number;
-    isDeleted?: boolean;
+    created?: string;
+    modified?: string;
+    isDeleted?: Metadata.isDeleted;
 };
+
+export namespace Metadata {
+
+    export enum isDeleted {
+        '_0' = 0,
+        '_1' = 1,
+    }
+
+
+}
 

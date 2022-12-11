@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Error } from '../models/Error';
 import type { Observatory } from '../models/Observatory';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -11,14 +12,14 @@ export class DefaultService {
     constructor(public readonly httpRequest: BaseHttpRequest) {}
 
     /**
-     * Handles login after the user has been authenticated.
+     * Handles user login.
      * @param token
-     * @returns void
+     * @returns Error Error
      * @throws ApiError
      */
     public getAccount(
         token?: string,
-    ): CancelablePromise<void> {
+    ): CancelablePromise<Error> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/login',
@@ -26,7 +27,8 @@ export class DefaultService {
                 'token': token,
             },
             errors: {
-                304: `Redirect to the root.`,
+                304: `Redirect to the laji authentication if token was not provided. Redirect to the root if token was provided.
+                `,
             },
         });
     }
@@ -34,9 +36,10 @@ export class DefaultService {
     /**
      * All observatories
      * @returns Observatory Success
+     * @returns Error Error
      * @throws ApiError
      */
-    public getObservatory(): CancelablePromise<Array<Observatory>> {
+    public getObservatories(): CancelablePromise<Array<Observatory> | Error> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/observatory',
@@ -47,11 +50,12 @@ export class DefaultService {
      * Get observatory by name.
      * @param name
      * @returns Observatory Success
+     * @returns Error Error
      * @throws ApiError
      */
-    public getObservatory1(
+    public getObservatoryByName(
         name: string,
-    ): CancelablePromise<Observatory> {
+    ): CancelablePromise<Observatory | Error> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/observatory/{name}',
